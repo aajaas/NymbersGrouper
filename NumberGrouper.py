@@ -8,11 +8,11 @@ numgroups = 3
 
 group_targetsum = round(df.impact.sum() / numgroups, -1)
 
-df['csum'] = df['impact'].cumsum()
-df['csum_midpoint'] = (df.csum + df.csum.shift().fillna(0)) / 2.
 
-df['group'] = pd.cut( df.csum_midpoint, np.linspace(0,df['impact'].sum(),numgroups+1 ))
-gg = df.groupby( df.group )['impact'].sum()
+a = df.values.ravel()
+shift_num = group_targetsum*np.arange(1,numgroups)
+idx = np.searchsorted(a.cumsum(), shift_num,'right')
+gg = np.split(a, idx)
 
 print("Total will be around:",group_targetsum)
 print(gg)
